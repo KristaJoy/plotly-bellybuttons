@@ -1,0 +1,23 @@
+html {
+  /* background-image: url("../images/bacteria.png");
+  background-repeat: repeat; */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.jumbotron{
+  color:inherit;
+  background-color:#d1cea1}
+
+.panel-primary>.panel-heading {
+  color: #fff;
+  background-color: #f8b08f;
+  border-color: #f8a883;
+}
+
+.panel-primary {
+  border-color: #f8a883;
+}
+.panel-title {
+  color: #333333;
+}
