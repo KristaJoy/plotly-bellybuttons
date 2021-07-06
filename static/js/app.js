@@ -5,15 +5,14 @@ d3.json("../samples.json").then((importedData) => {
   var metaData = importedData.metadata;
 
   // Sort the data needed for the bar chart
-  sortSamplesData = samplesData.sort(function(a, b) {
+  var sortSamplesData = samplesData.sort(function(a, b) {
     return parseFloat(b.sample_values) - parseFloat(a.sample_values);
   });
-  
-  console.log(sortSamplesData);
   
   // DROP DOWN MENU
   // Select the drop down menu
   var dropdownMenu = d3.select("#selDataset");
+  
   // assign all the id's to the menu options
   nameData.forEach(id => {
       var idItem = dropdownMenu.append("option");
@@ -21,26 +20,58 @@ d3.json("../samples.json").then((importedData) => {
   });
 
   // INIT DATA
-  var xdata = [163, 126, 113, 78, 71, 51, 50, 47, 40, 40],
-  ydata = ["OTU 1167", "OTU 2859", "OTU 482", "OTU 2264", "OTU 41", "OTU 1189", "OTU 352", "OTU 189", "OTU 2318", "OTU 1977"],
-  tdata = ["Bacteria;Bacteroidetes;Bacteroidia;Bacteroidales;Porphyromonadaceae;Porphyromonas",
-  "Bacteria;Firmicutes;Clostridia;Clostridiales;IncertaeSedisXI;Peptoniphilus", "Bacteria", 
-  "Bacteria;Firmicutes;Clostridia;Clostridiales;IncertaeSedisXI", "Bacteria",
-  "Bacteria;Bacteroidetes;Bacteroidia;Bacteroidales;Porphyromonadaceae;Porphyromonas", "Bacteria", 
-  "Bacteria", "Bacteria;Firmicutes;Clostridia;Clostridiales;IncertaeSedisXI;Anaerococcus",
-  "Bacteria;Firmicutes;Clostridia;Clostridiales"];
+  var idOnLoad = "940";
+  var onLoadData = sortSamplesData.filter(obj => obj.id === idOnLoad);
 
+  var xdata = onLoadData[0].sample_values.slice(0,10);
+  var yvalues = onLoadData[0].otu_ids.slice(0,10);
+  function myFunction(value) {return "UTO " + value;} // add OTU and turn num into string
+  var ydata = yvalues.map(myFunction);
+  var tdata = onLoadData[0].otu_labels.slice(0,10);
+
+
+  var xbubb = onLoadData[0].otu_ids;
+  var ybubb = onLoadData[0].sample_values;
+  var tbubb = onLoadData[0].otu_labels;
+  
+  // DISPLAY DATA ON PAGE LOAD
   function init() {
-    bardata = [{
+    // Bar Chart
+    trace = [{
       x: xdata.reverse(),
       y: ydata.reverse(),
       text: tdata.reverse(),
       type: "bar",
-      orientation: "h"}];
+      orientation: "h",
+      marker: {color: "rgb(121,190,199"}}];
     layout = {
         title: "Top 10 Bacteria Cultures Found",
         };
-    Plotly.newPlot("bar", bardata, layout);
+    Plotly.newPlot("bar", trace, layout);
+    
+    // Bubble Chart
+    var trace1 = {
+      x: xbubb,
+      y: ybubb,
+      text: tbubb,
+      mode: 'markers',
+      marker: {
+        size: ybubb,
+        color: xbubb,
+      }
+    };
+    
+    var data = [trace1];
+    
+    var layout = {
+      title: "Bacteria Cultures Per Sample",
+      xaxis: {title: "OTU ID"},
+      showlegend: false,
+      height: 500,
+      width: 750
+    };
+    
+    Plotly.newPlot("bubble", data, layout);
   }
     
   // ON CHANGE 
@@ -59,37 +90,61 @@ d3.json("../samples.json").then((importedData) => {
     // check the value is correct
     console.log(selectedOption);
     // buildPlot(selectedOption)
-    };
+    
+    // * * * * * * * * *
+    var filterData = sortSamplesData.filter(obj => obj.id === selectedOption);
+    console.log(filterData[0].otu_ids);
 
+    // Create BAR CHART data for chosen id
+    var xValues = filterData[0].sample_values.slice(0,10);
+    var yValues = filterData[0].otu_ids.slice(0,10);
+    function myFunction(value) {return "UTO " + value;} // add OTU and turn num into string
+    var yEdit = yValues.map(myFunction);
+    var textValues = filterData[0].otu_labels.slice(0,10);
+
+    // trace for horizontal chart
+    var trace = {
+      x: xValues.reverse(),
+      y: yEdit.reverse(),
+      text: textValues.reverse(),
+      type: "bar",
+      orientation: "h"
+      };
+     
+    // update the plot
+    Plotly.restyle("bar", "x", [trace.x]);
+    Plotly.restyle("bar", "y", [trace.y]);
+    Plotly.restyle("bar", "text", [trace.text]);
+    
+    // Create BUBBLE CHART data for chosen id
+    var xBubb = filterData[0].otu_ids,
+    yBubb = filterData[0].sample_values,
+    tBubb = filterData[0].otu_labels;
+
+    var trace1 = {
+      x: xBubb,
+      y: yBubb,
+      text: tBubb,
+      mode: 'markers',
+      marker: {
+        size: yBubb,
+        color: xBubb,
+      }
+    };
+    
+    // update the plot
+    Plotly.restyle("bubble", "x", [trace1.x]);
+    Plotly.restyle("bubble", "y", [trace1.y]);
+    Plotly.restyle("bubble", "text", [trace1.text]);
+    Plotly.restyle("bubble", "marker", [trace1.marker]);
+
+
+  };
+
+  // Call the function to populate the page on load
   init();
 
 });
 
 
-// // Create data for chosen id
-// barData = sortSamplesData[Object.keys(samplesData)[19]];
-
-// // Grab the values for the h-bar chart
-// var xValues = barData.sample_values.slice(0,10);
-// var yValues = barData.otu_ids.slice(0,10);
-// function myFunction(value) {return "UTO " + value;} // add OTU and turn num into string
-// var yEdit = yValues.map(myFunction);
-// var textValues = barData.otu_labels.slice(0,10);
-
-// // Trace for horizontal chart
-// var trace = {
-//   x: xValues.reverse(),
-//   y: yEdit.reverse(),
-//   text: textValues.reverse(),
-//   type: "bar",
-//   orientation: "h"
-//   };
-   
-// // data and layouts
-// var chartData = [trace];
-// var layout = {
-//   title: "Top 10 Bacteria Cultures Found",
-// };
-  
-// // Plot the chart
-// Plotly.newPlot("bar", chartData, layout);
+//var filterData = sortSamplesData[Object.keys(sortSamplesData)[19]];
