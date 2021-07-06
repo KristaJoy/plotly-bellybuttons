@@ -178,5 +178,3 @@ d3.json("../samples.json").then((importedData) => {
 
 });
 
-
-//var filterData = sortSamplesData[Object.keys(sortSamplesData)[19]];
