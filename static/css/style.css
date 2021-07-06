@@ -1,13 +1,27 @@
-html {
-  /* background-image: url("../images/bacteria.png");
-  background-repeat: repeat; */
+body {
+  background-image: url("../images/bacteria.png");
+  background-repeat: repeat;
   margin-left: auto;
   margin-right: auto;
 }
 
+.purple{
+  color: #9292b1;
+  font-size:85%;
+}
+
+p {
+  font-size: smaller;
+  overflow-wrap: break-word;
+}
+
+.well {
+  background-color: #9292b1;
+}
+
 .jumbotron{
-  color:inherit;
-  background-color:#d1cea1}
+  background-color:#fff;
+}
 
 .panel-primary>.panel-heading {
   color: #fff;
@@ -20,4 +34,8 @@ html {
 }
 .panel-title {
   color: #333333;
+}
+
+.top-buffer { 
+  margin-top:20px; 
 }

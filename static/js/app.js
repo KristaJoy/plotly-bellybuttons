@@ -19,23 +19,39 @@ d3.json("../samples.json").then((importedData) => {
       idItem.text(id);
   });
 
-  // INIT DATA
-  var idOnLoad = "940";
-  var onLoadData = sortSamplesData.filter(obj => obj.id === idOnLoad);
+    // INIT DATA
+  var idOnLoad = 940;
+  var onLoadData = sortSamplesData.filter(obj => parseInt(obj.id) === idOnLoad);
+  var onLoadDemoData = metaData.filter(obj => obj.id === idOnLoad);
 
+  // Bar Chart
   var xdata = onLoadData[0].sample_values.slice(0,10);
   var yvalues = onLoadData[0].otu_ids.slice(0,10);
   function myFunction(value) {return "UTO " + value;} // add OTU and turn num into string
   var ydata = yvalues.map(myFunction);
   var tdata = onLoadData[0].otu_labels.slice(0,10);
 
-
+  // Bubble Chart
   var xbubb = onLoadData[0].otu_ids;
   var ybubb = onLoadData[0].sample_values;
   var tbubb = onLoadData[0].otu_labels;
   
   // DISPLAY DATA ON PAGE LOAD
   function init() {
+    
+    // Demographic Info
+    // Select the drop down menu
+    var demoInfo = d3.select("#sample-metadata");
+    
+    // assign demo info to div
+    Object.entries(onLoadDemoData[0]).forEach(meta => {
+        var demoData = demoInfo.append("p");
+        demoData.text(meta);
+        console.log(demoData);
+    });
+    
+//Object.entries(onLoadDemoData[0]).forEach(([key, value]) => console.log(`${key}: ${value}`));
+
     // Bar Chart
     trace = [{
       x: xdata.reverse(),
@@ -92,8 +108,24 @@ d3.json("../samples.json").then((importedData) => {
     // buildPlot(selectedOption)
     
     // * * * * * * * * *
+    // DEMOGRAPHIC INFO
+    // Select the div
+    var demoInfo = d3.select("#sample-metadata");
+    demoInfo.html("");
+ 
+    // filter the data
+    var filterDemoData = metaData.filter(obj => obj.id === parseInt(selectedOption));
+    console.log(filterDemoData);
+
+    // assign demo info to div
+    Object.entries(filterDemoData[0]).forEach(meta => {
+        var demoData = demoInfo.append("p");
+        demoData.text(meta);
+        console.log(demoData);
+    });
+
+    // CHART DATA
     var filterData = sortSamplesData.filter(obj => obj.id === selectedOption);
-    console.log(filterData[0].otu_ids);
 
     // Create BAR CHART data for chosen id
     var xValues = filterData[0].sample_values.slice(0,10);
