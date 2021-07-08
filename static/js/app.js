@@ -20,21 +20,28 @@ d3.json("../samples.json").then((importedData) => {
   });
 
     // INIT DATA
+  // id showing in dropdown on page load
   var idOnLoad = 940;
+
+  // data filtered by test subject id number
   var onLoadData = sortSamplesData.filter(obj => parseInt(obj.id) === idOnLoad);
   var onLoadDemoData = metaData.filter(obj => obj.id === idOnLoad);
+  var onLoadGauge = metaData.filter(obj => obj.id === idOnLoad);
 
   // Bar Chart
-  var xdata = onLoadData[0].sample_values.slice(0,10);
+  var xdata = onLoadData[0].sample_values.slice(0,10).reverse();
   var yvalues = onLoadData[0].otu_ids.slice(0,10);
-  function myFunction(value) {return "UTO " + value;} // add OTU and turn num into string
-  var ydata = yvalues.map(myFunction);
-  var tdata = onLoadData[0].otu_labels.slice(0,10);
+  function myFunction(value) {return "UTO " + value + " ";} // add OTU and turn num into string
+  var ydata = yvalues.map(myFunction).reverse();
+  var tdata = onLoadData[0].otu_labels.slice(0,10).reverse();
 
   // Bubble Chart
   var xbubb = onLoadData[0].otu_ids;
   var ybubb = onLoadData[0].sample_values;
   var tbubb = onLoadData[0].otu_labels;
+
+  // Gauge Chart
+  var xGauge = onLoadGauge[0].wfreq;
   
   // DISPLAY DATA ON PAGE LOAD
   function init() {
@@ -44,19 +51,16 @@ d3.json("../samples.json").then((importedData) => {
     var demoInfo = d3.select("#sample-metadata");
     
     // assign demo info to div
-    Object.entries(onLoadDemoData[0]).forEach(meta => {
+    Object.entries(onLoadDemoData[0]).forEach(([key, value]) => {
         var demoData = demoInfo.append("p");
-        demoData.text(meta);
-        console.log(demoData);
+        demoData.text(`${key}: ${value}`);
     });
     
-//Object.entries(onLoadDemoData[0]).forEach(([key, value]) => console.log(`${key}: ${value}`));
-
     // Bar Chart
     trace = [{
-      x: xdata.reverse(),
-      y: ydata.reverse(),
-      text: tdata.reverse(),
+      x: xdata,
+      y: ydata,
+      text: tdata,
       type: "bar",
       orientation: "h",
       marker: {color: "rgb(121,190,199"}}];
@@ -76,19 +80,44 @@ d3.json("../samples.json").then((importedData) => {
         color: xbubb,
       }
     };
-    
     var data = [trace1];
-    
-    var layout = {
+    var layout2 = {
       title: "Bacteria Cultures Per Sample",
       xaxis: {title: "OTU ID"},
       showlegend: false,
       height: 500,
-      width: 750
+      width: 800
     };
-    
-    Plotly.newPlot("bubble", data, layout);
-  }
+    Plotly.newPlot("bubble", data, layout2);
+
+    // Gauge Chart
+    var gData = [{
+      domain: { x: [0, 1], y: [0, 1] },
+      value: xGauge,
+      title: { text: "<span style='color:#333333'>Belly Button Washing Frequency</span><br><span style='font-size:0.8em;'>Scrubs Per Week</span>" },
+      type: "indicator",
+      mode: "gauge+number",
+      gauge: {
+          bar: {color: "#DC7573"},
+          axis: {range: [null, 9] },
+          steps: [
+          {range: [0, 1], color: "#9292b1" },
+          {range: [1, 2], color: "#9095b3" },
+          {range: [2, 3], color: "#8d9ab5" },
+          {range: [3, 4], color: "#8b9fb7" },
+          {range: [4, 5], color: "#88a5bb" },
+          {range: [5, 6], color: "#83abbe" },
+          {range: [6, 7], color: "#80b1c0" },
+          {range: [7, 8], color: "#7db7c3" },
+          {range: [8, 9], color: "#7db7c3" },],
+      }
+    }];
+    var layout3 = { 
+      font: {color: "gray"}};
+
+    Plotly.newPlot("gauge", gData, layout3);
+  
+  };
     
   // ON CHANGE 
   // Select the drop down menu
@@ -98,8 +127,6 @@ d3.json("../samples.json").then((importedData) => {
     
   function optionChanged() {
     var dropdownMenu = d3.selectAll("#selDataset").node();
-    // Assign the dropdown menu item ID to a variable
-    var dropdownMenuID = dropdownMenu.id;
     // Assign the dropdown menu option to a variable
     var selectedOption = dropdownMenu.value;
         
@@ -115,38 +142,27 @@ d3.json("../samples.json").then((importedData) => {
  
     // filter the data
     var filterDemoData = metaData.filter(obj => obj.id === parseInt(selectedOption));
-    console.log(filterDemoData);
 
     // assign demo info to div
-    Object.entries(filterDemoData[0]).forEach(meta => {
-        var demoData = demoInfo.append("p");
-        demoData.text(meta);
-        console.log(demoData);
+    Object.entries(filterDemoData[0]).forEach(([key, value]) => {
+      var demoData = demoInfo.append("p");
+      demoData.text(`${key}: ${value}`);
     });
 
     // CHART DATA
     var filterData = sortSamplesData.filter(obj => obj.id === selectedOption);
 
     // Create BAR CHART data for chosen id
-    var xValues = filterData[0].sample_values.slice(0,10);
+    var xValues = filterData[0].sample_values.slice(0,10).reverse();
     var yValues = filterData[0].otu_ids.slice(0,10);
-    function myFunction(value) {return "UTO " + value;} // add OTU and turn num into string
-    var yEdit = yValues.map(myFunction);
-    var textValues = filterData[0].otu_labels.slice(0,10);
+    function myFunction(value) {return "UTO " + value + " ";} // add OTU and turn num into string
+    var yEdit = yValues.map(myFunction).reverse();
+    var textValues = filterData[0].otu_labels.slice(0,10).reverse();
 
-    // trace for horizontal chart
-    var trace = {
-      x: xValues.reverse(),
-      y: yEdit.reverse(),
-      text: textValues.reverse(),
-      type: "bar",
-      orientation: "h"
-      };
-     
     // update the plot
-    Plotly.restyle("bar", "x", [trace.x]);
-    Plotly.restyle("bar", "y", [trace.y]);
-    Plotly.restyle("bar", "text", [trace.text]);
+    Plotly.restyle("bar", "x", [xValues]);
+    Plotly.restyle("bar", "y", [yEdit]);
+    Plotly.restyle("bar", "text", [textValues]);
     
     // Create BUBBLE CHART data for chosen id
     var xBubb = filterData[0].otu_ids,
@@ -154,27 +170,27 @@ d3.json("../samples.json").then((importedData) => {
     tBubb = filterData[0].otu_labels;
 
     var trace1 = {
-      x: xBubb,
-      y: yBubb,
-      text: tBubb,
-      mode: 'markers',
-      marker: {
+        marker: {
         size: yBubb,
-        color: xBubb,
-      }
+        color: xBubb,}
     };
     
     // update the plot
-    Plotly.restyle("bubble", "x", [trace1.x]);
-    Plotly.restyle("bubble", "y", [trace1.y]);
-    Plotly.restyle("bubble", "text", [trace1.text]);
+    Plotly.restyle("bubble", "x", [xBubb]);
+    Plotly.restyle("bubble", "y", [yBubb]);
+    Plotly.restyle("bubble", "text", [tBubb]);
     Plotly.restyle("bubble", "marker", [trace1.marker]);
+        
+    // Create GAUGE CHART data for chosen id
+    var onLoadData = metaData.filter(obj => obj.id === parseInt(selectedOption));
+    var washValue = onLoadData[0].wfreq;
 
-
-  };
+    Plotly.restyle("gauge", "value", [washValue]);
+    };
 
   // Call the function to populate the page on load
   init();
 
 });
 
+//Object.entries(onLoadDemoData[0]).forEach(([key, value]) => console.log(`${key}: ${value}`));
