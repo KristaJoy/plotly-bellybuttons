@@ -17,9 +17,7 @@ Next I worked on the bubble chart which was fairly straight forward following th
 
 ### Demographic Information
 <img align="left" src="Images/demoinfo.png">
-Similar to working with the dropdown menu, I used d3 to select the div tag in the empty container and append new paragraph tags containing the key,value pairs.
-
-Two formatting problem I ran into was first, wanting the text to display with a colon instead of a comma—key: value vs key,value. I was able to format the text that d3 was appending to fix that. Second, was some longer text ran over the bounds of the container. A solution I discovered was using css to style the paragraph tag with an overflow-wrap and create a text break.
+Similar to working with the dropdown menu, I used d3 to select the div tag in the empty container and append new paragraph tags containing the key,value pairs. Two formatting problem I ran into was first, wanting the text to display with a colon instead of a comma—key: value vs key,value. I was able to format the text that d3 was appending to fix that. Second, was some longer text ran over the bounds of the container. A solution I discovered was using css to style the paragraph tag with an overflow-wrap and create a text break.
 
 ### Making them Interactive
 I wrote a function that would load the intial charts onto the webpage using data for the first test subject's id (940) that was showing in the dropdown menu. I then wrote another function that would load when the change event was detected by d3 and someone selected a new value off the dropdown menu. The value of the option selected was filtered into the data which returned just the oject with the data needed to restyle the charts on the page with the new data matching the id.
@@ -30,5 +28,8 @@ One challenge here was realizing the test subjects' ids were integers in one blo
 Taking what I earned from working on the previous charts I was able to create this third bonus chart using the data re: washing frequency in the deomgraphic information.
 
 ### Final Dashboard
-<img align="left" src="Images/dashboard.png">
 Along the way I had fun making the dashboard more visually appealing, using css to format as well as within the javascript choosing complimentary colors. 
+
+View the [dashboard here](https://kristajoy.github.io/plotly-bellybuttons/).
+<img align="left" src="Images/dashboard.png">
+
