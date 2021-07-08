@@ -1,5 +1,5 @@
 // Load in the JSON data
-d3.json("samples.json").then((importedData) => {
+d3.json("../samples.json").then((importedData) => {
   var samplesData = importedData.samples;
   var nameData = importedData.names;
   var metaData = importedData.metadata;
