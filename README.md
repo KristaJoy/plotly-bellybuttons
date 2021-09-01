@@ -3,6 +3,8 @@ An Interactive Dashboard created with Plot.ly, D3, and JavaScript.
 
 Used a JSON [dataset](http://robdunnlab.com/projects/belly-button-biodiversity/) that contains the fascinating results of which microbes were present in test subjects' belly buttons. 
 
+View the [dashboard here](https://kristajoy.github.io/plotly-bellybuttons/).
+
 ### Drop Down Menu
 <img align="left" src="Images/dropdownmenu.png">
 The first step I took was to import the json file using d3 and create variables for the three main arrays of data contained inside. I used the first array of id numbers to populate the dropdown menu with the test subject id numbers that would act as our filter for which data each chart would display. (The html and initial set up with an empty bootstrap menu was provided.) I used d3 to select the empty menu and append new option tags for each id number in the array. 
@@ -30,6 +32,5 @@ Taking what I earned from working on the previous charts I was able to create th
 ### Final Dashboard
 Along the way I had fun making the dashboard more visually appealing, using css to format as well as within the javascript choosing complimentary colors. 
 
-View the [dashboard here](https://kristajoy.github.io/plotly-bellybuttons/).
 <img align="left" src="Images/dashboard.png">
 
